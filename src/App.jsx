@@ -83,7 +83,7 @@ const subjects = [
   },
   {
     name: "OS",
-    title: "Operating System",
+    title: "Sistem Operasi",
     description:
       "Pahami bagaimana proses, memori, file system, dan hardware dikelola dalam sistem operasi Linux dan Windows.",
     logo: logoOS,
