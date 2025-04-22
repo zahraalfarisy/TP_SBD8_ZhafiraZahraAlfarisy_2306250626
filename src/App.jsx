@@ -502,7 +502,7 @@ export default function App() {
           </div>
 
           <p className="text-sm opacity-60">
-            © 2025 Netlab TP SBD Zhafira Zahra Alfarisy_2306250636 • All Rights Reserved
+            © 2025 TP SBD Zhafira Zahra Alfarisy (2306250636)
           </p>
         </div>
       </footer>
