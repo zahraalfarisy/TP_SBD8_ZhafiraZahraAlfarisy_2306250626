@@ -85,7 +85,7 @@ const subjects = [
     name: "OS",
     title: "Sistem Operasi",
     description:
-      "Pahami bagaimana proses, memori, file system, dan hardware dikelola dalam sistem operasi Linux dan Windows.",
+      "Pahami bagaimana proses, memori, file system, dan hardware dikelola dalam sistem operasi Linux.",
     logo: logoOS,
     color: COLORS.os,
     bgPattern: "radial-gradient(circle at 40% 60%, rgba(139, 92, 246, 0.2) 0%, transparent 50%)",
