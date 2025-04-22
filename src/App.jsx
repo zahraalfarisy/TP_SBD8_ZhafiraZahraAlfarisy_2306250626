@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -99,6 +99,17 @@ export default function App() {
   });
   const [activeSubject, setActiveSubject] = useState("SBD");
   const [expandedCards, setExpandedCards] = useState({});
+  const [activeSection, setActiveSection] = useState("home");
+  const sliderRef = useRef(null);
+
+  // Refs for each section
+  const sectionRefs = {
+    home: useRef(null),
+    sbd: useRef(null),
+    dmj: useRef(null),
+    os: useRef(null),
+    featured: useRef(null),
+  };
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -110,6 +121,57 @@ export default function App() {
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
+
+  // Set up intersection observer to detect active section
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.3,
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          if (id) {
+            setActiveSection(id);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observe all sections
+    Object.values(sectionRefs).forEach((ref) => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Function to scroll to a section when nav link is clicked
+  const scrollToSection = (sectionId) => {
+    // Handle slider navigation for subject sections
+    if (sectionId === "sbd" || sectionId === "dmj" || sectionId === "os") {
+      // Map section id to slider index
+      const subjectIndex = subjects.findIndex(subject => subject.name.toLowerCase() === sectionId);
+      if (subjectIndex !== -1 && sliderRef.current) {
+        sliderRef.current.slickGoTo(subjectIndex);
+      }
+    }
+
+    // Scroll to section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -167,9 +229,14 @@ export default function App() {
 
   // Dynamic accent color for navigation highlight
   const getNavHighlight = (navItem) => {
-    if (navItem.toLowerCase() === activeSubject.toLowerCase()) {
-      const subject = subjects.find((s) => s.name === activeSubject);
-      return { color: subject.color, fontWeight: "bold" };
+    if (navItem.toLowerCase() === activeSection) {
+      // Find the corresponding subject if active section is a subject
+      if (["sbd", "dmj", "os"].includes(navItem.toLowerCase())) {
+        const subject = subjects.find((s) => s.name.toLowerCase() === navItem.toLowerCase());
+        return { color: subject.color, fontWeight: "bold" };
+      }
+      // Default highlight for non-subject sections
+      return { color: COLORS.primary, fontWeight: "bold" };
     }
     return {};
   };
@@ -204,15 +271,27 @@ export default function App() {
         {/* Navigation Items - Stacked on mobile, horizontal on desktop */}
         <ul className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
           <li>
-            <a href="#home" className="hover:underline transition-colors duration-300">
+            <a 
+              href="#home" 
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("home");
+              }}
+              className="hover:underline transition-colors duration-300"
+              style={getNavHighlight("home")}
+            >
               Home
             </a>
           </li>
           <li>
             <a
               href="#sbd"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("sbd");
+              }}
               className="hover:underline transition-colors duration-300"
-              style={getNavHighlight("SBD")}
+              style={getNavHighlight("sbd")}
             >
               SBD
             </a>
@@ -220,8 +299,12 @@ export default function App() {
           <li>
             <a
               href="#dmj"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("dmj");
+              }}
               className="hover:underline transition-colors duration-300"
-              style={getNavHighlight("DMJ")}
+              style={getNavHighlight("dmj")}
             >
               DMJ
             </a>
@@ -229,38 +312,44 @@ export default function App() {
           <li>
             <a
               href="#os"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection("os");
+              }}
               className="hover:underline transition-colors duration-300"
-              style={getNavHighlight("OS")}
+              style={getNavHighlight("os")}
             >
               OS
             </a>
           </li>
           <li>
-            <button
-              onClick={toggleDarkMode}
-              className="ml-1 sm:ml-4 w-12 h-6 sm:w-14 sm:h-7 rounded-full relative transition-all duration-300 shadow-inner"
-              style={{
-                backgroundColor: darkMode ? COLORS.light : COLORS.dark,
-                border: `2px solid ${darkMode ? COLORS.dark : COLORS.light}`,
-              }}
-            >
-              <span
-                className="absolute top-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-300 flex items-center justify-center text-xs"
-                style={{
-                  right: darkMode ? "0.5rem" : "calc(100% - 1.5rem)",
-                  backgroundColor: darkMode ? COLORS.dark : COLORS.light,
-                  color: darkMode ? COLORS.light : COLORS.dark,
-                }}
-              >
-                {darkMode ? "🌙" : "☀️"}
-              </span>
-            </button>
+          <button
+  onClick={toggleDarkMode}
+  className="ml-1 sm:ml-4 w-12 h-6 sm:w-14 sm:h-7 rounded-full relative transition-all duration-300"
+  style={{
+    backgroundColor: darkMode ? "#1E293B" : "#F8FAFC",
+    border: `2px solid ${darkMode ? "#F8FAFC" : "#1E293B"}`,
+  }}
+>
+  <span
+    className="absolute top-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-300 flex items-center justify-center"
+    style={{
+      transform: `translateX(${darkMode ? "calc(100% - 2px)" : "0"})`,
+      left: "1px",
+      top: "1px",
+      backgroundColor: darkMode ? "#F8FAFC" : "#1E293B",
+      color: darkMode ? "#1E293B" : "#F8FAFC",
+    }}
+  >
+    {darkMode ? "🌙" : "☀️"}
+  </span>
+</button>
           </li>
         </ul>
       </nav>
 
       {/* Home Section */}
-      <section id="home" className="flex flex-col lg:flex-row items-center justify-center px-8 py-20 gap-12">
+      <section id="home" ref={sectionRefs.home} className="flex flex-col lg:flex-row items-center justify-center px-8 py-20 gap-12">
         <div className="relative group">
           <div
             className="absolute inset-0 rounded-full animate-pulse blur-xl opacity-70"
@@ -308,6 +397,7 @@ export default function App() {
               <button
                 className="px-6 py-2 rounded-full transition-all duration-300 transform hover:-translate-y-1 font-medium text-white"
                 style={{ backgroundColor: COLORS[activeSubject.toLowerCase()] || COLORS.primary }}
+                onClick={() => scrollToSection(activeSubject.toLowerCase())}
               >
                 Get Started
               </button>
@@ -317,6 +407,7 @@ export default function App() {
                   border: `2px solid ${COLORS[activeSubject.toLowerCase()] || COLORS.primary}`,
                   color: darkMode ? COLORS.light : COLORS.dark,
                 }}
+                onClick={() => scrollToSection("featured")}
               >
                 Learn More
               </button>
@@ -325,13 +416,14 @@ export default function App() {
         </div>
       </section>
 
-      {/* Subject Slider - UPDATED WITH CENTERED CONTENT */}
+      {/* Subject Slider - UPDATED WITH CENTERED CONTENT & REFS */}
       <main className="w-full max-w-4xl mx-auto pb-20 px-4">
-        <Slider {...sliderSettings}>
+        <Slider ref={sliderRef} {...sliderSettings}>
           {subjects.map((subject) => (
             <div
               key={subject.name}
               id={subject.name.toLowerCase()}
+              ref={sectionRefs[subject.name.toLowerCase()]}
               className="p-8 backdrop-blur-lg rounded-3xl shadow-xl flex flex-col items-center justify-center text-center transition-all duration-500"
               style={{
                 backgroundColor: darkMode ? "rgba(0, 0, 0, 0.6)" : "rgba(255, 255, 255, 0.8)",
@@ -363,6 +455,7 @@ export default function App() {
                 <button
                   className="px-6 py-2 rounded-full transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg font-medium text-white"
                   style={{ backgroundColor: subject.color }}
+                  onClick={() => scrollToSection("featured")}
                 >
                   Explore {subject.name}
                 </button>
@@ -373,7 +466,7 @@ export default function App() {
       </main>
 
       {/* Courses Section */}
-      <section className="w-full max-w-6xl mx-auto pb-20 px-4" id="featured-content">
+      <section className="w-full max-w-6xl mx-auto pb-20 px-4" id="featured" ref={sectionRefs.featured}>
         <h2 className="text-3xl font-bold text-center mb-10">Netlab's Subjects</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -492,6 +585,10 @@ export default function App() {
               <a
                 key={`footer-${subject.name}`}
                 href={`#${subject.name.toLowerCase()}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(subject.name.toLowerCase());
+                }}
                 className="flex items-center gap-2 transition-all duration-300 hover:underline"
                 style={{ color: subject.color }}
               >
