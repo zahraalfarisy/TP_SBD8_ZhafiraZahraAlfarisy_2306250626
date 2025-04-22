@@ -179,16 +179,17 @@ export default function App() {
       className="min-h-screen text-slate-800 dark:text-white transition-all duration-500"
       style={getBackgroundStyle()}
     >
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 py-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="relative overflow-hidden rounded-full h-12 w-12 flex items-center justify-center">
+      {/* Updated Responsive Navbar */}
+      <nav className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 py-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
+        {/* Logo and Brand */}
+        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-0 w-full sm:w-auto justify-center sm:justify-start">
+          <div className="relative overflow-hidden rounded-full h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-green-500 to-purple-500 animate-spin-slow opacity-70" />
-            <img src={logo} alt="Netlab Logo" className="h-8 w-8 relative z-10 drop-shadow" />
+            <img src={logo} alt="Netlab Logo" className="h-7 w-7 sm:h-8 sm:w-8 relative z-10 drop-shadow" />
           </div>
-          <span className="text-xl font-bold flex items-center">
+          <span className="text-lg sm:text-xl font-bold flex flex-wrap items-center">
             <span
-              className="px-2 py-1 rounded mr-2"
+              className="px-2 py-1 rounded mr-1 sm:mr-2"
               style={{
                 background: COLORS.primary,
                 color: COLORS.light,
@@ -199,7 +200,9 @@ export default function App() {
             <span>Laboratory</span>
           </span>
         </div>
-        <ul className="flex items-center gap-6 text-lg">
+        
+        {/* Navigation Items - Stacked on mobile, horizontal on desktop */}
+        <ul className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
           <li>
             <a href="#home" className="hover:underline transition-colors duration-300">
               Home
@@ -235,16 +238,16 @@ export default function App() {
           <li>
             <button
               onClick={toggleDarkMode}
-              className="ml-6 w-14 h-7 rounded-full relative transition-all duration-300 shadow-inner"
+              className="ml-1 sm:ml-4 w-12 h-6 sm:w-14 sm:h-7 rounded-full relative transition-all duration-300 shadow-inner"
               style={{
                 backgroundColor: darkMode ? COLORS.light : COLORS.dark,
                 border: `2px solid ${darkMode ? COLORS.dark : COLORS.light}`,
               }}
             >
               <span
-                className="absolute top-0.5 w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-xs"
+                className="absolute top-0.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all duration-300 flex items-center justify-center text-xs"
                 style={{
-                  right: darkMode ? "0.5rem" : "calc(100% - 1.75rem)",
+                  right: darkMode ? "0.5rem" : "calc(100% - 1.5rem)",
                   backgroundColor: darkMode ? COLORS.dark : COLORS.light,
                   color: darkMode ? COLORS.light : COLORS.dark,
                 }}
@@ -371,7 +374,7 @@ export default function App() {
 
       {/* Courses Section */}
       <section className="w-full max-w-6xl mx-auto pb-20 px-4" id="featured-content">
-        <h2 className="text-3xl font-bold text-center mb-10">Featured Content</h2>
+        <h2 className="text-3xl font-bold text-center mb-10">Netlab's Subjects</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {subjects.map((subject) => (
