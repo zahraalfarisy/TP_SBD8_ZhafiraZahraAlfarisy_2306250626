@@ -3,16 +3,16 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Logo umum dan logo tiap matkul
+// Logo netlab dan logo tiap matkul
 import logo from "./assets/Logo.svg";
 import logoSBD from "./assets/SBDLogo.svg";
 import logoDMJ from "./assets/DMJLogo.svg";
 import logoOS from "./assets/OSLogo.svg";
 
-// Color palette constants
+// color palette
 const COLORS = {
-  primary: "#3B82F6", // Vibrant blue
-  secondary: "#10B981", // Emerald green
+  primary: "#3B82F6", // Blue
+  secondary: "#10B981", // Green
   accent: "#F59E0B", // Amber
   dark: "#1E293B", // Slate dark
   light: "#F8FAFC", // Slate light
@@ -21,7 +21,7 @@ const COLORS = {
   os: "#8B5CF6", // Purple for OS
 };
 
-// Module data for each subject
+// Data modul praktikum
 const moduleData = {
   SBD: [
     { title: "Setup RDBMS", number: 1 },
@@ -102,7 +102,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("home");
   const sliderRef = useRef(null);
 
-  // Refs for each section
+  
   const sectionRefs = {
     home: useRef(null),
     sbd: useRef(null),
@@ -122,7 +122,7 @@ export default function App() {
     }
   }, [darkMode]);
 
-  // Set up intersection observer to detect active section
+ 
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -143,7 +143,7 @@ export default function App() {
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    // Observe all sections
+  
     Object.values(sectionRefs).forEach((ref) => {
       if (ref.current) {
         observer.observe(ref.current);
@@ -155,18 +155,18 @@ export default function App() {
     };
   }, []);
 
-  // Function to scroll to a section when nav link is clicked
+  // scroll
   const scrollToSection = (sectionId) => {
-    // Handle slider navigation for subject sections
+  
     if (sectionId === "sbd" || sectionId === "dmj" || sectionId === "os") {
-      // Map section id to slider index
+  
       const subjectIndex = subjects.findIndex(subject => subject.name.toLowerCase() === sectionId);
       if (subjectIndex !== -1 && sliderRef.current) {
         sliderRef.current.slickGoTo(subjectIndex);
       }
     }
 
-    // Scroll to section
+    
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
@@ -214,7 +214,7 @@ export default function App() {
     ),
   };
 
-  // Dynamic background style based on active subject
+  
   const getBackgroundStyle = () => {
     const subject = subjects.find((s) => s.name === activeSubject) || subjects[0];
     const baseGradient = darkMode
@@ -227,7 +227,7 @@ export default function App() {
     };
   };
 
-  // Dynamic accent color for navigation highlight
+  
   const getNavHighlight = (navItem) => {
     if (navItem.toLowerCase() === activeSection) {
       // Find the corresponding subject if active section is a subject
@@ -246,9 +246,9 @@ export default function App() {
       className="min-h-screen text-slate-800 dark:text-white transition-all duration-500"
       style={getBackgroundStyle()}
     >
-      {/* Updated Responsive Navbar */}
+      {/* Navbar */}
       <nav className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 py-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
-        {/* Logo and Brand */}
+        {/* Logo*/}
         <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-0 w-full sm:w-auto justify-center sm:justify-start">
           <div className="relative overflow-hidden rounded-full h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-green-500 to-purple-500 animate-spin-slow opacity-70" />
@@ -268,7 +268,7 @@ export default function App() {
           </span>
         </div>
         
-        {/* Navigation Items - Stacked on mobile, horizontal on desktop */}
+        {/* stack mobile horizontal desktop */}
         <ul className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
           <li>
             <a 
@@ -416,7 +416,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Subject Slider - UPDATED WITH CENTERED CONTENT & REFS */}
+      {/* Subject Slider */}
       <main className="w-full max-w-4xl mx-auto pb-20 px-4">
         <Slider ref={sliderRef} {...sliderSettings}>
           {subjects.map((subject) => (
@@ -465,7 +465,7 @@ export default function App() {
         </Slider>
       </main>
 
-      {/* Courses Section */}
+      {/* Section Matkul */}
       <section className="w-full max-w-6xl mx-auto pb-20 px-4" id="featured" ref={sectionRefs.featured}>
         <h2 className="text-3xl font-bold text-center mb-10">Netlab's Subjects</h2>
 
@@ -522,7 +522,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Module List - Dropdown */}
+                {/* Module List */}
                 <div
                   className="overflow-hidden transition-all duration-500"
                   style={{
